@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chan Li Family Tree</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    h1 { text-align: center; margin-bottom: 20px; color: #333; font-size: 22px; }
+
+    .tree-container {
+      position: relative;
+      width: 100%;
+      min-height: 800px;
+    }
+
+    svg.lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    svg.lines line {
+      stroke: #999;
+      stroke-width: 2;
+    }
+    svg.lines line.spouse {
+      stroke: #E91E63;
+      stroke-width: 2;
+    }
+    svg.lines line.dashed {
+      stroke-dasharray: 5,5;
+    }
+
+    .people {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      grid-template-rows: repeat(5, auto);
+      gap: 15px 5px;
+      justify-items: center;
+      padding: 10px;
+    }
+
+    .person {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: #ddd;
+      background-size: cover;
+      background-position: center;
+    }
+    .photo.male { border-color: #2196F3; }
+    .photo.female { border-color: #E91E63; }
+    .photo.no-photo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #666;
+      background: #eee;
+    }
+    .name {
+      font-size: 8px;
+      font-weight: 500;
+      text-align: center;
+      max-width: 55px;
+      color: #333;
+      line-height: 1.1;
+    }
+    .aka { font-size: 7px; color: #666; font-style: italic; }
+
+    /* Grid positions */
+    .row0 { grid-row: 1; }
+    .row1 { grid-row: 2; }
+    .row2 { grid-row: 3; }
+    .row3 { grid-row: 4; }
+    .row4 { grid-row: 5; }
+
+    @media print {
+      body { background: white; padding: 10px; }
+      .photo { width: 45px; height: 45px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Chan Li Family Tree</h1>
+
+  <div class="tree-container">
+    <svg class="lines" id="lines"></svg>
+
+    <div class="people" id="people">
+      <!-- ROW 0: Great-grandparents -->
+      <div class="person row0" id="popo" style="grid-column: 2;">
+        <div class="photo female no-photo">👵</div>
+        <div class="name">Popo Li</div>
+      </div>
+      <div class="person row0" id="ham" style="grid-column: 3;">
+        <div class="photo male no-photo">👴</div>
+        <div class="name">Ham Li</div>
+      </div>
+      <div class="person row0" id="peter" style="grid-column: 5;">
+        <div class="photo male" style="background-image: url('photos/m7.png')"></div>
+        <div class="name">Peter</div>
+      </div>
+      <div class="person row0" id="cora" style="grid-column: 6;">
+        <div class="photo female" style="background-image: url('photos/m8.png')"></div>
+        <div class="name">Cora</div>
+      </div>
+      <div class="person row0" id="yehyeh" style="grid-column: 11;">
+        <div class="photo male no-photo">👴</div>
+        <div class="name">Yehyeh</div>
+      </div>
+      <div class="person row0" id="mama" style="grid-column: 12;">
+        <div class="photo female no-photo">👵</div>
+        <div class="name">Mama</div>
+      </div>
+
+      <!-- ROW 1: Grandparents -->
+      <div class="person row1" id="yan" style="grid-column: 1;">
+        <div class="photo male" style="background-image: url('photos/f7.png')"></div>
+        <div class="name">Yan</div>
+      </div>
+      <div class="person row1" id="auntfun" style="grid-column: 2;">
+        <div class="photo female" style="background-image: url('photos/m11.png')"></div>
+        <div class="name">Aunt Fun</div>
+      </div>
+      <div class="person row1" id="name3" style="grid-column: 3;">
+        <div class="photo male" style="background-image: url('photos/f3.png')"></div>
+        <div class="name">NAME3</div>
+      </div>
+      <div class="person row1" id="gaunt" style="grid-column: 4;">
+        <div class="photo female" style="background-image: url('photos/f2.png')"></div>
+        <div class="name">G Aunt</div>
+      </div>
+      <div class="person row1" id="hong" style="grid-column: 5;">
+        <div class="photo male" style="background-image: url('photos/m1.png')"></div>
+        <div class="name">Hong</div>
+      </div>
+      <div class="person row1" id="amy" style="grid-column: 7;">
+        <div class="photo female" style="background-image: url('photos/f6.png')"></div>
+        <div class="name">Amy</div>
+      </div>
+      <div class="person row1" id="ernest" style="grid-column: 8;">
+        <div class="photo male" style="background-image: url('photos/f5.png')"></div>
+        <div class="name">Ernest</div>
+      </div>
+      <div class="person row1" id="gooma2" style="grid-column: 10;">
+        <div class="photo female" style="background-image: url('photos/f4.png')"></div>
+        <div class="name">Gooma2</div>
+      </div>
+      <div class="person row1" id="gooma3" style="grid-column: 13;">
+        <div class="photo female no-photo">👩</div>
+        <div class="name">Gooma3</div>
+      </div>
+
+      <!-- ROW 2: Parents -->
+      <div class="person row2" id="ada" style="grid-column: 1;">
+        <div class="photo female" style="background-image: url('photos/m4.png')"></div>
+        <div class="name">Ada</div>
+      </div>
+      <div class="person row2" id="adrien" style="grid-column: 2;">
+        <div class="photo male" style="background-image: url('photos/m3.png')"></div>
+        <div class="name">Adrien</div>
+      </div>
+      <div class="person row2" id="stanley" style="grid-column: 5;">
+        <div class="photo male" style="background-image: url('photos/b1.png')"></div>
+        <div class="name">Stanley</div>
+      </div>
+      <div class="person row2" id="angela" style="grid-column: 6;">
+        <div class="photo female" style="background-image: url('photos/b2.png')"></div>
+        <div class="name">Angela</div>
+      </div>
+      <div class="person row2" id="mary" style="grid-column: 7;">
+        <div class="photo female" style="background-image: url('photos/b11.png')"></div>
+        <div class="name">Mary</div>
+      </div>
+      <div class="person row2" id="wilfred" style="grid-column: 8;">
+        <div class="photo male" style="background-image: url('photos/b12.png')"></div>
+        <div class="name">Wilfred</div>
+      </div>
+      <div class="person row2" id="stewart" style="grid-column: 9;">
+        <div class="photo male" style="background-image: url('photos/b10.png')"></div>
+        <div class="name">Stewart</div>
+      </div>
+      <div class="person row2" id="mae" style="grid-column: 10;">
+        <div class="photo female" style="background-image: url('photos/b9.png')"></div>
+        <div class="name">Mae</div>
+      </div>
+      <div class="person row2" id="ahfat" style="grid-column: 11;">
+        <div class="photo male" style="background-image: url('photos/m14.png')"></div>
+        <div class="name">AhFat</div>
+      </div>
+      <div class="person row2" id="name1" style="grid-column: 12;">
+        <div class="photo female" style="background-image: url('photos/m12.png')"></div>
+        <div class="name">NAME1</div>
+      </div>
+      <div class="person row2" id="name2" style="grid-column: 13;">
+        <div class="photo female" style="background-image: url('photos/m13.png')"></div>
+        <div class="name">NAME2</div>
+      </div>
+      <div class="person row2" id="manyi" style="grid-column: 14;">
+        <div class="photo female" style="background-image: url('photos/m6.png')"></div>
+        <div class="name">Man-Yi</div>
+      </div>
+
+      <!-- ROW 3: More parents + children -->
+      <div class="person row3" id="siah" style="grid-column: 1;">
+        <div class="photo female" style="background-image: url('photos/b3.png')"></div>
+        <div class="name">Si Ah</div>
+      </div>
+      <div class="person row3" id="zachary" style="grid-column: 6;">
+        <div class="photo male" style="background-image: url('photos/b6.png')"></div>
+        <div class="name">Zachary</div>
+      </div>
+      <div class="person row3" id="xavier" style="grid-column: 7;">
+        <div class="photo male" style="background-image: url('photos/b8.png')"></div>
+        <div class="name">Xavier</div>
+      </div>
+      <div class="person row3" id="sebastian" style="grid-column: 8;">
+        <div class="photo male" style="background-image: url('photos/b4.png')"></div>
+        <div class="name">Sebastian</div>
+      </div>
+      <div class="person row3" id="kayley" style="grid-column: 9;">
+        <div class="photo female" style="background-image: url('photos/b5.png')"></div>
+        <div class="name">Kayley</div>
+      </div>
+      <div class="person row3" id="chloe" style="grid-column: 10;">
+        <div class="photo female" style="background-image: url('photos/b7.png')"></div>
+        <div class="name">Chloe</div>
+      </div>
+      <div class="person row3" id="keith" style="grid-column: 13;">
+        <div class="photo male" style="background-image: url('photos/f1.png')"></div>
+        <div class="name">Keith</div>
+      </div>
+      <div class="person row3" id="cherry" style="grid-column: 14;">
+        <div class="photo female" style="background-image: url('photos/m5.png')"></div>
+        <div class="name">Cherry</div>
+        <div class="aka">(Lai-Yi)</div>
+      </div>
+
+      <!-- ROW 4: Youngest -->
+      <div class="person row4" id="natalie" style="grid-column: 13;">
+        <div class="photo female" style="background-image: url('photos/m10.png')"></div>
+        <div class="name">Natalie</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getCenter(id) {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      const container = document.querySelector('.tree-container').getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2 - container.left,
+        y: rect.top + rect.height / 2 - container.top
+      };
+    }
+
+    function getBottom(id) {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      const container = document.querySelector('.tree-container').getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2 - container.left,
+        y: rect.bottom - container.top
+      };
+    }
+
+    function getTop(id) {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      const container = document.querySelector('.tree-container').getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2 - container.left,
+        y: rect.top - container.top
+      };
+    }
+
+    function drawLine(svg, p1, p2, classes = '') {
+      if (!p1 || !p2) return;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', p1.x);
+      line.setAttribute('y1', p1.y);
+      line.setAttribute('x2', p2.x);
+      line.setAttribute('y2', p2.y);
+      if (classes) line.setAttribute('class', classes);
+      svg.appendChild(line);
+    }
+
+    function drawParentChild(svg, parent1, parent2, children, dashed = false) {
+      const p1 = getBottom(parent1);
+      const p2 = parent2 ? getBottom(parent2) : p1;
+      if (!p1) return;
+
+      const midX = parent2 ? (p1.x + p2.x) / 2 : p1.x;
+      const midY = p1.y + 15;
+
+      // Line from parent(s) down
+      drawLine(svg, { x: midX, y: p1.y }, { x: midX, y: midY }, dashed ? 'dashed' : '');
+
+      // Horizontal bar if multiple children
+      if (children.length > 1) {
+        const childPositions = children.map(c => getTop(c)).filter(Boolean);
+        if (childPositions.length > 0) {
+          const leftX = Math.min(...childPositions.map(p => p.x));
+          const rightX = Math.max(...childPositions.map(p => p.x));
+          const barY = midY + 10;
+          drawLine(svg, { x: midX, y: midY }, { x: midX, y: barY }, dashed ? 'dashed' : '');
+          drawLine(svg, { x: leftX, y: barY }, { x: rightX, y: barY }, dashed ? 'dashed' : '');
+          childPositions.forEach(cp => {
+            drawLine(svg, { x: cp.x, y: barY }, cp, dashed ? 'dashed' : '');
+          });
+        }
+      } else if (children.length === 1) {
+        const cp = getTop(children[0]);
+        if (cp) drawLine(svg, { x: midX, y: midY }, cp, dashed ? 'dashed' : '');
+      }
+    }
+
+    function drawSpouse(svg, id1, id2) {
+      const p1 = getCenter(id1);
+      const p2 = getCenter(id2);
+      if (p1 && p2) {
+        drawLine(svg, p1, p2, 'spouse');
+      }
+    }
+
+    function drawLines() {
+      const svg = document.getElementById('lines');
+      svg.innerHTML = '';
+
+      // Spouse connections
+      drawSpouse(svg, 'popo', 'ham');
+      drawSpouse(svg, 'peter', 'cora');
+      drawSpouse(svg, 'yehyeh', 'mama');
+      drawSpouse(svg, 'yan', 'auntfun');
+      drawSpouse(svg, 'name3', 'gaunt');
+      drawSpouse(svg, 'amy', 'ernest');
+      drawSpouse(svg, 'ada', 'adrien');
+      drawSpouse(svg, 'stanley', 'angela');
+      drawSpouse(svg, 'mary', 'wilfred');
+      drawSpouse(svg, 'stewart', 'mae');
+      drawSpouse(svg, 'manyi', 'keith');
+
+      // Parent-child connections
+      drawParentChild(svg, 'popo', 'ham', ['amy', 'yan', 'name3']);
+      drawParentChild(svg, 'peter', 'cora', ['hong']);
+      drawParentChild(svg, 'yehyeh', 'mama', ['gooma2', 'ernest', 'gooma3']);
+      drawParentChild(svg, 'yan', 'auntfun', ['ada']);
+      drawParentChild(svg, 'amy', 'ernest', ['stanley', 'mary', 'stewart']);
+      drawParentChild(svg, 'ada', 'adrien', ['siah']);
+      drawParentChild(svg, 'mary', 'wilfred', ['zachary', 'xavier', 'sebastian']);
+      drawParentChild(svg, 'stewart', 'mae', ['kayley', 'chloe']);
+      drawParentChild(svg, 'gooma3', null, ['manyi', 'cherry']);
+      drawParentChild(svg, 'manyi', 'keith', ['natalie']);
+
+      // Gooma2's family (dashed)
+      drawParentChild(svg, 'gooma2', null, ['ahfat', 'name1', 'name2'], true);
+
+      // Sibling connection: Popo and Peter
+      const popoBottom = getBottom('popo');
+      const peterTop = getTop('peter');
+      if (popoBottom && peterTop) {
+        const midY = (popoBottom.y + peterTop.y) / 2;
+        drawLine(svg, { x: popoBottom.x, y: popoBottom.y }, { x: popoBottom.x, y: midY - 20 }, 'dashed');
+      }
+    }
+
+    window.addEventListener('load', drawLines);
+    window.addEventListener('resize', drawLines);
+  </script>
+</body>
+</html>

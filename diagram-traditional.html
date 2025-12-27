@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Tree</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 30px 15px;
+      min-height: 100vh;
+    }
+    h1 { text-align: center; margin-bottom: 25px; color: #333; font-size: 24px; }
+
+    .tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      width: 100%;
+    }
+
+    .family-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .couple {
+      display: flex;
+      align-items: flex-start;
+    }
+    .couple .person { margin: 0 -5px; }
+    .couple .person:first-child { z-index: 2; }
+
+    .has-children { position: relative; }
+    .has-children::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 20px;
+      background: #999;
+    }
+    .has-children.dashed::after {
+      background: none;
+      border-left: 2px dashed #999;
+    }
+
+    .children {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      position: relative;
+      padding-top: 12px;
+    }
+    .children.multi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 22px;
+      right: 22px;
+      height: 2px;
+      background: #999;
+    }
+    .children.multi.dashed::before {
+      background: none;
+      border-top: 2px dashed #999;
+    }
+    .children .person { position: relative; }
+    .children .person::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 12px;
+      background: #999;
+    }
+    .children.dashed .person::before {
+      background: none;
+      border-left: 2px dashed #999;
+    }
+    .children.single::before { display: none; }
+
+    .person {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: #ddd;
+      background-size: cover;
+      background-position: center;
+    }
+    .photo.male { border-color: #2196F3; }
+    .photo.female { border-color: #E91E63; }
+    .photo.no-photo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #666;
+      background: #eee;
+    }
+    .name {
+      font-size: 9px;
+      font-weight: 500;
+      text-align: center;
+      max-width: 60px;
+      color: #333;
+      line-height: 1.1;
+    }
+    .aka { font-size: 7px; color: #666; font-style: italic; }
+
+    .section-label {
+      font-size: 8px;
+      color: #888;
+      margin-bottom: 3px;
+    }
+
+    .spacer { width: 40px; }
+
+    @media print {
+      body { background: white; padding: 10px; }
+      .photo { width: 45px; height: 45px; }
+      .name { font-size: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Chan Li Family Tree</h1>
+
+  <div class="tree">
+
+    <!-- ROW 1: Great-grandparents -->
+    <div class="row">
+      <!-- Popo & Ham -->
+      <div class="family-unit">
+        <div class="section-label">Amy's Parents</div>
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo female no-photo">👵</div>
+            <div class="name">Popo Li</div>
+          </div>
+          <div class="person">
+            <div class="photo male no-photo">👴</div>
+            <div class="name">Ham Li</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/f6.png')"></div>
+            <div class="name">Amy</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f7.png')"></div>
+            <div class="name">Yan</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f3.png')"></div>
+            <div class="name">NAME3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Peter (Popo's brother) & Cora - separate branch -->
+      <div class="family-unit">
+        <div class="section-label">Popo's Brother</div>
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/m7.png')"></div>
+            <div class="name">Peter</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m8.png')"></div>
+            <div class="name">Cora</div>
+          </div>
+        </div>
+        <div class="children single">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/m1.png')"></div>
+            <div class="name">Hong</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Yehyeh & Mama -->
+      <div class="family-unit">
+        <div class="section-label">Ernest's Parents</div>
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo male no-photo">👴</div>
+            <div class="name">Yehyeh</div>
+          </div>
+          <div class="person">
+            <div class="photo female no-photo">👵</div>
+            <div class="name">Mama</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/f4.png')"></div>
+            <div class="name">Gooma2</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f5.png')"></div>
+            <div class="name">Ernest</div>
+          </div>
+          <div class="person">
+            <div class="photo female no-photo">👩</div>
+            <div class="name">Gooma3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Grandparents generation with spouses -->
+    <div class="row" style="margin-top: 25px;">
+      <!-- Yan & Aunt Fun -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f7.png')"></div>
+            <div class="name">Yan</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m11.png')"></div>
+            <div class="name">Aunt Fun</div>
+          </div>
+        </div>
+        <div class="children single">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m4.png')"></div>
+            <div class="name">Ada</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAME3 & G Aunt -->
+      <div class="family-unit">
+        <div class="couple">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f3.png')"></div>
+            <div class="name">NAME3</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/f2.png')"></div>
+            <div class="name">G Aunt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AMY & ERNEST - CENTER -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/f6.png')"></div>
+            <div class="name">Amy</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f5.png')"></div>
+            <div class="name">Ernest</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b1.png')"></div>
+            <div class="name">Stanley</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b11.png')"></div>
+            <div class="name">Mary</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b10.png')"></div>
+            <div class="name">Stewart</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gooma2's family (dashed) -->
+      <div class="family-unit">
+        <div class="has-children dashed">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/f4.png')"></div>
+            <div class="name">Gooma2</div>
+          </div>
+        </div>
+        <div class="children multi dashed">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/m14.png')"></div>
+            <div class="name">AhFat</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m12.png')"></div>
+            <div class="name">NAME1</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m13.png')"></div>
+            <div class="name">NAME2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gooma3's family -->
+      <div class="family-unit">
+        <div class="has-children">
+          <div class="person">
+            <div class="photo female no-photo">👩</div>
+            <div class="name">Gooma3</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m6.png')"></div>
+            <div class="name">Man-Yi</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m5.png')"></div>
+            <div class="name">Cherry</div>
+            <div class="aka">(Lai-Yi)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Parents generation -->
+    <div class="row" style="margin-top: 25px;">
+      <!-- Ada & Adrien -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m4.png')"></div>
+            <div class="name">Ada</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/m3.png')"></div>
+            <div class="name">Adrien</div>
+          </div>
+        </div>
+        <div class="children single">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b3.png')"></div>
+            <div class="name">Si Ah</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stanley & Angela -->
+      <div class="family-unit">
+        <div class="couple">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b1.png')"></div>
+            <div class="name">Stanley</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b2.png')"></div>
+            <div class="name">Angela</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mary & Wilfred -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b11.png')"></div>
+            <div class="name">Mary</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b12.png')"></div>
+            <div class="name">Wilfred</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b6.png')"></div>
+            <div class="name">Zachary</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b8.png')"></div>
+            <div class="name">Xavier</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b4.png')"></div>
+            <div class="name">Sebastian</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stewart & Mae -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/b10.png')"></div>
+            <div class="name">Stewart</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b9.png')"></div>
+            <div class="name">Mae</div>
+          </div>
+        </div>
+        <div class="children multi">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b5.png')"></div>
+            <div class="name">Kayley</div>
+          </div>
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/b7.png')"></div>
+            <div class="name">Chloe</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Man-Yi & Keith -->
+      <div class="family-unit">
+        <div class="couple has-children">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m6.png')"></div>
+            <div class="name">Man-Yi</div>
+          </div>
+          <div class="person">
+            <div class="photo male" style="background-image: url('photos/f1.png')"></div>
+            <div class="name">Keith</div>
+          </div>
+        </div>
+        <div class="children single">
+          <div class="person">
+            <div class="photo female" style="background-image: url('photos/m10.png')"></div>
+            <div class="name">Natalie</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
