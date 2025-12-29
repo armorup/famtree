@@ -12,27 +12,27 @@ B11 Mary Chan - Amy/Ernest’s middle daughter
 B12 Wilfred Man - Mary's husband
 
 M1 Hong - Uncle Peter’s son
-M2 Rex - DETAILS1
+M2 Rex - Siu-Kee’s son
 M3 Adrien - Ada's husband
-M4 Ada - Yan's daughter
+M4 Ada - Uncle Ma’s daughter
 M5 Cherry (Lai-Yi) - Gooma3's younger daughter
 M6 Man-Yi - Gooma3's oldest daughter
-M7 Peter - Popo's youngest brother
+M7 Peter - Popo's brother
 M8 Cora - Peter’s wife
-M9 Michelle - DETAILS2
+M9 Michelle - Peter’s daughter, Hong’s younger sister 
 M10 Natalie - Man-Yi's daughter
 M11 Aunt Fun - Yan’s wife
-M12 NAME1 - GooMa2’s eldest DIL
-M13 NAME2 - GooMa2’s DIL
+M12 Dai-sou - GooMa2’s eldest DIL
+M13 Yee-sou  - GooMa2’s 2nd DIL, AhFat’s wife 
 M14 AhFat - GooMa2’s 2nd son
 
 F1 Keith Hung - Man-Yi’s husband
-F2 G Aunt - NAME3's wife
-F3 NAME3 - Popo/Ham’s son, Amy's uncle
+F2 Aunt Ma - Uncle Ma’s  wife
+F3 Uncle Ma - Popo’s younger brother, Amy's uncle
 F4 Gooma2 Chan - yehyeh/mama’s daughter (Ernests' oldest sister)
-F5 Ernest Chan - yehyeh/mama’s youngest son (Stewart's dad)
-F6 Amy Chan - Popo/Ham’s daughter, (Stewart's mom)
-F7 Yan -- Popo/Ham’s son, (Amy's uncle)
+F5 Ernest Chan - yehyeh/mama’s youngest son
+F6 Amy Chan - Popo/Ham’s daughter
+F7 Yan -- Popo/Ham’s nephew, (Amy's cousin)
 
 Not in picture:
 Popo Li - Amy's mother
@@ -40,4 +40,4 @@ Ham Li - Amy’s dad
 Gooma3 Chan - yehyeh/mama’s daughter (Ernest's other sister)
 yehyeh - Ernest's father
 mama - Ernest's mother
-
+Siu-Kee - Popo’s brother (Peter’s younger brother)
