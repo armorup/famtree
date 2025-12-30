@@ -123,26 +123,19 @@
 
     .flat-view .tree-container {
       position: relative;
-      width: 100%;
-      min-height: 800px;
+      min-height: 500px;
     }
     .flat-view svg.lines {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
       pointer-events: none;
       z-index: 0;
     }
-    .flat-view svg.lines line, .flat-view svg.lines path {
+    .flat-view svg.lines path {
       stroke: #999;
       stroke-width: 2;
       fill: none;
-    }
-    .flat-view svg.lines .spouse {
-      stroke: #ccc;
-      stroke-width: 2;
     }
     .flat-view svg.lines .dashed {
       stroke-dasharray: 5,5;
@@ -154,24 +147,10 @@
     .flat-view .people {
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(20, 1fr);
-      grid-template-rows: repeat(5, auto);
-      gap: 20px 0;
-      justify-items: center;
-      padding: 10px;
     }
-    .flat-view .couple {
-      display: flex;
-      align-items: flex-start;
+    .flat-view .people .person {
+      position: absolute;
     }
-    .flat-view .couple .person { margin: 0 -5px; }
-    .flat-view .couple .person:first-child { z-index: 2; }
-    .flat-view .row0 { grid-row: 1; }
-    .flat-view .row1 { grid-row: 2; }
-    .flat-view .row2 { grid-row: 3; }
-    .flat-view .row3 { grid-row: 4; }
-    .flat-view .row4 { grid-row: 5; }
 
     /* ========== NESTED LAYOUT ========== */
     .nested-view { display: none; }
@@ -598,303 +577,33 @@
 
   <!-- ========== FLAT VIEW ========== -->
   <div class="flat-view">
-    <div class="tree-container">
-      <svg class="lines" id="lines"></svg>
-
-      <div class="people" id="people">
-        <!-- ROW 0: Great-grandparents -->
-        <div class="couple row0" style="grid-column: 2 / span 2;">
-          <div class="person" id="ham">
-            <div class="photo male no-photo"></div>
-            <div class="name">Ham Li</div>
-          </div>
-          <div class="person" id="popo">
-            <div class="photo female no-photo"></div>
-            <div class="name">Popo Li</div>
-          </div>
-        </div>
-        <div class="couple row0" style="grid-column: 6 / span 2;">
-          <div class="person" id="peter">
-            <div class="photo male" style="background-image: url('thumbs/photos/m7.png')"></div>
-            <div class="name">Peter</div>
-          </div>
-          <div class="person" id="cora">
-            <div class="photo female" style="background-image: url('thumbs/photos/m8.png')"></div>
-            <div class="name">Cora</div>
-          </div>
-        </div>
-        <div class="person row0" id="siukee" style="grid-column: 9;">
-          <div class="photo male no-photo"></div>
-          <div class="name">Siu-Kee</div>
-        </div>
-        <div class="couple row0" style="grid-column: 15 / span 2;">
-          <div class="person" id="yehyeh">
-            <div class="photo male no-photo"></div>
-            <div class="name">Yehyeh</div>
-          </div>
-          <div class="person" id="mama">
-            <div class="photo female no-photo"></div>
-            <div class="name">Mama</div>
-          </div>
-        </div>
-
-        <!-- ROW 1: Grandparents -->
-        <div class="couple row1" style="grid-column: 1 / span 2;">
-          <div class="person" id="yan">
-            <div class="photo male" style="background-image: url('thumbs/photos/f7.png')"></div>
-            <div class="name">Yan</div>
-          </div>
-          <div class="person" id="auntfun">
-            <div class="photo female" style="background-image: url('thumbs/photos/m11.png')"></div>
-            <div class="name">Aunt Fun</div>
-          </div>
-        </div>
-        <div class="couple row1" style="grid-column: 3 / span 2;">
-          <div class="person" id="unclema">
-            <div class="photo male" style="background-image: url('thumbs/photos/f3.png')"></div>
-            <div class="name">Uncle Ma</div>
-          </div>
-          <div class="person" id="auntma">
-            <div class="photo female" style="background-image: url('thumbs/photos/f2.png')"></div>
-            <div class="name">Aunt Ma</div>
-          </div>
-        </div>
-        <div class="person row1" id="hong" style="grid-column: 6;">
-          <div class="photo male" style="background-image: url('thumbs/photos/m1.png')"></div>
-          <div class="name">Hong</div>
-        </div>
-        <div class="person row1" id="michelle" style="grid-column: 7;">
-          <div class="photo female" style="background-image: url('thumbs/photos/m9.png')"></div>
-          <div class="name">Michelle</div>
-        </div>
-        <div class="person row1" id="rex" style="grid-column: 9;">
-          <div class="photo male" style="background-image: url('thumbs/photos/m2.png')"></div>
-          <div class="name">Rex</div>
-        </div>
-        <div class="couple row1" style="grid-column: 11 / span 2;">
-          <div class="person" id="ernest">
-            <div class="photo male" style="background-image: url('thumbs/photos/f5.png')"></div>
-            <div class="name">Ernest</div>
-          </div>
-          <div class="person" id="amy">
-            <div class="photo female" style="background-image: url('thumbs/photos/f6.png')"></div>
-            <div class="name">Amy</div>
-          </div>
-        </div>
-        <div class="person row1" id="gooma2" style="grid-column: 14;">
-          <div class="photo female" style="background-image: url('thumbs/photos/f4.png')"></div>
-          <div class="name">Gooma2</div>
-        </div>
-        <div class="person row1" id="gooma3" style="grid-column: 18;">
-          <div class="photo female no-photo"></div>
-          <div class="name">Gooma3</div>
-        </div>
-
-        <!-- ROW 2: Parents -->
-        <div class="couple row2" style="grid-column: 3 / span 2;">
-          <div class="person" id="adrien">
-            <div class="photo male" style="background-image: url('thumbs/photos/m3.png')"></div>
-            <div class="name">Adrien</div>
-          </div>
-          <div class="person" id="ada">
-            <div class="photo female" style="background-image: url('thumbs/photos/m4.png')"></div>
-            <div class="name">Ada</div>
-          </div>
-        </div>
-        <div class="couple row2" style="grid-column: 10 / span 2;">
-          <div class="person" id="stanley">
-            <div class="photo male" style="background-image: url('thumbs/photos/b1.png')"></div>
-            <div class="name">Stanley</div>
-          </div>
-          <div class="person" id="angela">
-            <div class="photo female" style="background-image: url('thumbs/photos/b2.png')"></div>
-            <div class="name">Angela</div>
-          </div>
-        </div>
-        <div class="couple row2" style="grid-column: 12 / span 2;">
-          <div class="person" id="wilfred">
-            <div class="photo male" style="background-image: url('thumbs/photos/b12.png')"></div>
-            <div class="name">Wilfred</div>
-          </div>
-          <div class="person" id="mary">
-            <div class="photo female" style="background-image: url('thumbs/photos/b11.png')"></div>
-            <div class="name">Mary</div>
-          </div>
-        </div>
-        <div class="couple row2" style="grid-column: 14 / span 2;">
-          <div class="person" id="stewart">
-            <div class="photo male" style="background-image: url('thumbs/photos/b10.png')"></div>
-            <div class="name">Stewart</div>
-          </div>
-          <div class="person" id="mae">
-            <div class="photo female" style="background-image: url('thumbs/photos/b9.png')"></div>
-            <div class="name">Mae</div>
-          </div>
-        </div>
-        <div class="person row2" id="ahfat" style="grid-column: 16;">
-          <div class="photo male" style="background-image: url('thumbs/photos/m14.png')"></div>
-          <div class="name">AhFat</div>
-        </div>
-        <div class="couple row2" style="grid-column: 18 / span 2;">
-          <div class="person" id="keith">
-            <div class="photo male" style="background-image: url('thumbs/photos/f1.png')"></div>
-            <div class="name">Keith</div>
-          </div>
-          <div class="person" id="manyi">
-            <div class="photo female" style="background-image: url('thumbs/photos/m6.png')"></div>
-            <div class="name">Man-Yi</div>
-          </div>
-        </div>
-
-        <!-- ROW 2 continued: Cherry (Gooma3's daughter, same level as Man-Yi) -->
-        <div class="person row2" id="cherry" style="grid-column: 20;">
-          <div class="photo female" style="background-image: url('thumbs/photos/m5.png')"></div>
-          <div class="name">Cherry</div>
-          <div class="aka">(Lai-Yi)</div>
-        </div>
-
-        <!-- ROW 3: Children -->
-        <div class="person row3" id="siah" style="grid-column: 3;">
-          <div class="photo female" style="background-image: url('thumbs/photos/b3.png')"></div>
-          <div class="name">Si Ah</div>
-        </div>
-        <div class="person row3" id="zachary" style="grid-column: 12;">
-          <div class="photo male" style="background-image: url('thumbs/photos/b6.png')"></div>
-          <div class="name">Zachary</div>
-        </div>
-        <div class="person row3" id="xavier" style="grid-column: 13;">
-          <div class="photo male" style="background-image: url('thumbs/photos/b8.png')"></div>
-          <div class="name">Xavier</div>
-        </div>
-        <div class="person row3" id="sebastian" style="grid-column: 14;">
-          <div class="photo male" style="background-image: url('thumbs/photos/b4.png')"></div>
-          <div class="name">Sebastian</div>
-        </div>
-        <div class="person row3" id="kayley" style="grid-column: 15;">
-          <div class="photo female" style="background-image: url('thumbs/photos/b5.png')"></div>
-          <div class="name">Kayley</div>
-        </div>
-        <div class="person row3" id="chloe" style="grid-column: 16;">
-          <div class="photo female" style="background-image: url('thumbs/photos/b7.png')"></div>
-          <div class="name">Chloe</div>
-        </div>
-        <div class="person row3" id="natalie" style="grid-column: 18;">
-          <div class="photo female" style="background-image: url('thumbs/photos/m10.png')"></div>
-          <div class="name">Natalie</div>
-        </div>
-
-        </div>
+    <div class="tree-container" id="flat-tree-container">
+      <!-- Rendered by flat-tree.js -->
     </div>
   </div>
   </div><!-- end tree-wrapper -->
 
+  <script src="flat-tree.js"></script>
+
   <script>
-    // ========== FLAT VIEW LINE DRAWING ==========
-    function getPos(id, position = 'center') {
-      const el = document.getElementById(id);
-      if (!el) return null;
-      const rect = el.getBoundingClientRect();
-      const container = document.querySelector('.flat-view .tree-container').getBoundingClientRect();
-      const x = rect.left + rect.width / 2 - container.left;
-      if (position === 'top') return { x, y: rect.top - container.top };
-      if (position === 'bottom') return { x, y: rect.bottom - container.top };
-      return { x, y: rect.top + rect.height / 2 - container.top };
-    }
+    // ========== STATE ==========
+    let familyData = null;
+    let currentLayout = 'nested';
+    let currentStyle = 'photos';
 
-    function drawPath(svg, points, classes = '') {
-      if (points.length < 2) return;
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      let d = `M ${points[0].x} ${points[0].y}`;
-      for (let i = 1; i < points.length; i++) {
-        d += ` L ${points[i].x} ${points[i].y}`;
-      }
-      path.setAttribute('d', d);
-      if (classes) path.setAttribute('class', classes);
-      svg.appendChild(path);
-    }
-
-    function drawElbow(svg, from, to, classes = '') {
-      // Draw orthogonal elbow line: down from parent, horizontal, down to child
-      if (!from || !to) return;
-      const midY = from.y + (to.y - from.y) / 2;
-      drawPath(svg, [from, {x: from.x, y: midY}, {x: to.x, y: midY}, to], classes);
-    }
-
-    function drawParentChild(svg, parent1, parent2, children, classes = '') {
-      const p1 = getPos(parent1, 'bottom');
-      const p2 = parent2 ? getPos(parent2, 'bottom') : p1;
-      if (!p1) return;
-
-      const midX = parent2 ? (p1.x + p2.x) / 2 : p1.x;
-      const dropY = p1.y + 12;
-
-      // Drop line from parents
-      drawPath(svg, [{x: midX, y: p1.y}, {x: midX, y: dropY}], classes);
-
-      const childPositions = children.map(c => getPos(c, 'top')).filter(Boolean);
-      if (childPositions.length === 0) return;
-
-      // Calculate bar position (halfway between parent drop and children)
-      const childTopY = Math.min(...childPositions.map(p => p.y));
-      const barY = dropY + (childTopY - dropY) / 2;
-
-      if (childPositions.length > 1) {
-        const leftX = Math.min(...childPositions.map(p => p.x));
-        const rightX = Math.max(...childPositions.map(p => p.x));
-
-        // Vertical to bar, horizontal bar, vertical to each child
-        drawPath(svg, [{x: midX, y: dropY}, {x: midX, y: barY}], classes);
-        drawPath(svg, [{x: leftX, y: barY}, {x: rightX, y: barY}], classes);
-        childPositions.forEach(cp => {
-          drawPath(svg, [{x: cp.x, y: barY}, cp], classes);
-        });
-      } else {
-        // Single child - elbow line
-        const cp = childPositions[0];
-        drawPath(svg, [{x: midX, y: dropY}, {x: midX, y: barY}, {x: cp.x, y: barY}, cp], classes);
-      }
-    }
-
-    function drawNephew(svg, fromId, toId) {
-      // Draw dashed nephew connection
-      const from = getPos(fromId, 'bottom');
-      const to = getPos(toId, 'top');
-      if (!from || !to) return;
-      drawElbow(svg, from, to, 'nephew');
-    }
-
-    function drawLines() {
-      const svg = document.getElementById('lines');
-      if (!svg) return;
-      svg.innerHTML = '';
-
-      // Parent-child connections (drawn first, behind everything)
-      drawParentChild(svg, 'ham', 'popo', ['amy']);
-      drawParentChild(svg, 'peter', 'cora', ['hong', 'michelle']);
-      drawParentChild(svg, 'siukee', null, ['rex']);
-      drawParentChild(svg, 'yehyeh', 'mama', ['gooma2', 'ernest', 'gooma3']);
-      drawParentChild(svg, 'unclema', 'auntma', ['ada']);
-      drawParentChild(svg, 'ernest', 'amy', ['stanley', 'mary', 'stewart']);
-      drawParentChild(svg, 'adrien', 'ada', ['siah']);
-      drawParentChild(svg, 'wilfred', 'mary', ['zachary', 'xavier', 'sebastian']);
-      drawParentChild(svg, 'stewart', 'mae', ['kayley', 'chloe']);
-      drawParentChild(svg, 'gooma3', null, ['manyi', 'cherry']);
-      drawParentChild(svg, 'keith', 'manyi', ['natalie']);
-      drawParentChild(svg, 'gooma2', null, ['ahfat'], 'dashed');
-
-      // Nephew connection (Popo -> Yan)
-      drawNephew(svg, 'popo', 'yan');
-    }
-
-    // ========== CYCLING TOGGLE FUNCTIONS ==========
     const layouts = ['nested', 'flat'];
     const styles = ['photos', 'doodles'];
     const layoutLabels = { nested: '⊞', flat: '≡' };
     const styleLabels = { photos: '👤', doodles: '😀' };
 
-    let currentLayout = 'nested';
-    let currentStyle = 'photos';
+    // ========== RENDER FLAT TREE ==========
+    function renderFlatView() {
+      if (!familyData) return;
+      const container = document.getElementById('flat-tree-container');
+      renderFlatTree(container, familyData, currentStyle);
+    }
 
+    // ========== TOGGLE FUNCTIONS ==========
     function setLayout(layout) {
       currentLayout = layout;
       document.getElementById('layoutBtn').textContent = layoutLabels[layout];
@@ -902,19 +611,24 @@
       document.querySelector('.flat-view').classList.toggle('active', layout === 'flat');
       localStorage.setItem('treeLayout', layout);
       if (layout === 'flat') {
-        setTimeout(drawLines, 50);
+        renderFlatView();
       }
     }
 
     function setStyle(style) {
       currentStyle = style;
       document.getElementById('styleBtn').textContent = styleLabels[style];
-      document.querySelectorAll('.photo[style*="background-image"]').forEach(el => {
+      // Update nested view photos
+      document.querySelectorAll('.nested-view .photo[style*="background-image"]').forEach(el => {
         const s = el.getAttribute('style');
         const newStyle = s.replace(/thumbs\/(photos|doodles)\//, `thumbs/${style}/`);
         el.setAttribute('style', newStyle);
       });
       localStorage.setItem('treeStyle', style);
+      // Re-render flat view with new style
+      if (currentLayout === 'flat') {
+        renderFlatView();
+      }
     }
 
     function cycleLayout() {
@@ -927,20 +641,30 @@
       setStyle(styles[(idx + 1) % styles.length]);
     }
 
-    // Event listeners
+    // ========== INITIALIZATION ==========
     document.getElementById('layoutBtn').addEventListener('click', cycleLayout);
     document.getElementById('styleBtn').addEventListener('click', cycleStyle);
 
-    // Load saved preferences
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedLayout = localStorage.getItem('treeLayout') || 'nested';
-      const savedStyle = localStorage.getItem('treeStyle') || 'photos';
-      setLayout(savedLayout);
-      setStyle(savedStyle);
-    });
+    // Load family data and initialize
+    fetch('family_tree.json')
+      .then(res => res.json())
+      .then(data => {
+        familyData = data;
+        // Load saved preferences
+        const savedLayout = localStorage.getItem('treeLayout') || 'nested';
+        const savedStyle = localStorage.getItem('treeStyle') || 'photos';
+        currentStyle = savedStyle;
+        setStyle(savedStyle);
+        setLayout(savedLayout);
+      })
+      .catch(err => {
+        console.error('Failed to load family_tree.json:', err);
+        // Fallback to nested view
+        setLayout('nested');
+      });
 
     window.addEventListener('resize', () => {
-      if (currentLayout === 'flat') drawLines();
+      if (currentLayout === 'flat') renderFlatView();
     });
   </script>
 </body>
