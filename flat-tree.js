@@ -226,8 +226,10 @@ class FamilyTreeLayout {
     }
 
     // Position children (to the right)
+    // Use couple width for all parents so generations align
     if (unit.childUnits && unit.childUnits.length > 0) {
-      const childX = x + unitWidth + LAYOUT.generationGap;
+      const coupleWidth = LAYOUT.personWidth * 2 + LAYOUT.coupleGap;
+      const childX = x + coupleWidth + LAYOUT.generationGap;
       // Center children block vertically relative to parent
       let childY = centerY - unit.childrenHeight / 2;
 
