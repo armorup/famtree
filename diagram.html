@@ -48,22 +48,23 @@
       gap: 8px;
     }
     .icon-btn {
-      width: 36px;
-      height: 36px;
-      border: 2px solid #333;
-      background: #fff;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
       cursor: pointer;
-      font-size: 16px;
-      border-radius: 50%;
+      font-size: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.15s;
     }
     .icon-btn:hover {
-      background: #eee;
+      opacity: 1;
     }
     .icon-btn:active {
-      background: #ddd;
+      opacity: 0.5;
     }
 
     /* Tree wrapper - pannable/zoomable on mobile */
@@ -593,8 +594,8 @@
 
     const layouts = ['nested', 'flat'];
     const styles = ['photos', 'doodles'];
-    const layoutLabels = { nested: '⊞', flat: '≡' };
-    const styleLabels = { photos: '👤', doodles: '😀' };
+    const layoutLabels = { nested: '■', flat: '▲' };
+    const styleLabels = { photos: '👤', doodles: '🙂' };
 
     // ========== RENDER FLAT TREE ==========
     function renderFlatView() {
