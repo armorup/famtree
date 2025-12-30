@@ -2,13 +2,13 @@
 // Calculates positions and renders from family_tree.json
 
 const LAYOUT = {
-  personWidth: 60,
-  personHeight: 80,
-  coupleGap: 10,     // Gap between partners
-  siblingGap: 20,    // Gap between siblings
-  familyGap: 60,     // Gap between family units
-  generationGap: 100, // Vertical gap between generations
-  padding: 25
+  personWidth: 58,
+  personHeight: 78,
+  coupleGap: -6,     // Negative = partners overlap/touch
+  siblingGap: 8,     // Gap between siblings
+  familyGap: 35,     // Gap between family units
+  generationGap: 90, // Vertical gap between generations
+  padding: 15
 };
 
 class FamilyTreeLayout {
@@ -105,98 +105,190 @@ class FamilyTreeLayout {
     });
   }
 
-  // Main layout calculation
+  // Main layout calculation - positions children centered under parents
   calculateLayout() {
     this.calculateGenerations();
     this.groupByGeneration();
 
-    // Define the tree structure manually for this specific family
-    // This gives us precise control over positioning
-    const tree = this.buildTreeStructure();
+    // Build family tree with parent-child relationships
+    const familyUnits = this.buildFamilyUnits();
 
-    let y = LAYOUT.padding;
-    tree.forEach((row, genIndex) => {
-      let x = LAYOUT.padding;
-
-      row.forEach((unit, unitIndex) => {
-        if (unitIndex > 0) x += LAYOUT.familyGap;
-
-        x = this.layoutUnit(unit, x, y);
-      });
-
-      y += LAYOUT.generationGap;
-    });
+    // Calculate widths bottom-up, then position top-down
+    this.calculateWidths(familyUnits);
+    this.positionUnits(familyUnits);
 
     this.buildConnections();
   }
 
-  // Build tree structure defining the layout order
-  buildTreeStructure() {
-    // Manual tree structure for precise control
-    // Each row is an array of "units" (couples/singles with optional children indicator)
-    return [
-      // Row 0: Great-grandparents
-      [
-        { partners: ['X2', 'X1'], id: 'ham-popo' },           // Ham & Popo
-        { partners: ['M7', 'M8'], id: 'peter-cora' },         // Peter & Cora
-        { partners: ['X6'], id: 'siukee' },                   // Siu-Kee
-        { partners: ['X4', 'X5'], id: 'yehyeh-mama' }         // Yehyeh & Mama
-      ],
-      // Row 1: Grandparents
-      [
-        { partners: ['F7', 'M11'], id: 'yan-fun' },           // Yan & Aunt Fun
-        { partners: ['F3', 'F2'], id: 'unclema-auntma' },     // Uncle Ma & Aunt Ma
-        { single: 'M1', id: 'hong' },                         // Hong
-        { single: 'M9', id: 'michelle' },                     // Michelle
-        { single: 'M2', id: 'rex' },                          // Rex
-        { partners: ['F5', 'F6'], id: 'ernest-amy' },         // Ernest & Amy
-        { single: 'F4', id: 'gooma2' },                       // Gooma2
-        { single: 'X3', id: 'gooma3' }                        // Gooma3
-      ],
-      // Row 2: Parents
-      [
-        { partners: ['M3', 'M4'], id: 'adrien-ada' },         // Adrien & Ada
-        { partners: ['B1', 'B2'], id: 'stanley-angela' },     // Stanley & Angela
-        { partners: ['B12', 'B11'], id: 'wilfred-mary' },     // Wilfred & Mary
-        { partners: ['B10', 'B9'], id: 'stewart-mae' },       // Stewart & Mae
-        { single: 'M14', id: 'ahfat' },                       // AhFat
-        { partners: ['F1', 'M6'], id: 'keith-manyi' },        // Keith & Man-Yi
-        { single: 'M5', id: 'cherry' }                        // Cherry
-      ],
-      // Row 3: Children
-      [
-        { single: 'B3', id: 'siah' },                         // Si Ah
-        { single: 'B6', id: 'zachary' },                      // Zachary
-        { single: 'B8', id: 'xavier' },                       // Xavier
-        { single: 'B4', id: 'sebastian' },                    // Sebastian
-        { single: 'B5', id: 'kayley' },                       // Kayley
-        { single: 'B7', id: 'chloe' },                        // Chloe
-        { single: 'M10', id: 'natalie' }                      // Natalie
+  // Build family units with their children
+  buildFamilyUnits() {
+    return {
+      // Row 0: Great-grandparents (roots)
+      roots: [
+        {
+          id: 'ham-popo',
+          partners: ['X2', 'X1'],
+          childUnits: [
+            { id: 'yan-fun', partners: ['F7', 'M11'], childUnits: [], isNephew: true }
+          ]
+        },
+        {
+          id: 'peter-cora',
+          partners: ['M7', 'M8'],
+          childUnits: [
+            { id: 'hong', single: 'M1', childUnits: [] },
+            { id: 'michelle', single: 'M9', childUnits: [] }
+          ]
+        },
+        {
+          id: 'siukee',
+          partners: ['X6'],
+          childUnits: [
+            { id: 'rex', single: 'M2', childUnits: [] }
+          ]
+        },
+        {
+          id: 'yehyeh-mama',
+          partners: ['X4', 'X5'],
+          childUnits: [
+            {
+              id: 'unclema-auntma',
+              partners: ['F3', 'F2'],
+              childUnits: [
+                {
+                  id: 'adrien-ada',
+                  partners: ['M3', 'M4'],
+                  childUnits: [
+                    { id: 'siah', single: 'B3', childUnits: [] }
+                  ]
+                }
+              ]
+            },
+            {
+              id: 'ernest-amy',
+              partners: ['F5', 'F6'],
+              childUnits: [
+                { id: 'stanley-angela', partners: ['B1', 'B2'], childUnits: [] },
+                {
+                  id: 'wilfred-mary',
+                  partners: ['B12', 'B11'],
+                  childUnits: [
+                    { id: 'zachary', single: 'B6', childUnits: [] },
+                    { id: 'xavier', single: 'B8', childUnits: [] },
+                    { id: 'sebastian', single: 'B4', childUnits: [] }
+                  ]
+                },
+                {
+                  id: 'stewart-mae',
+                  partners: ['B10', 'B9'],
+                  childUnits: [
+                    { id: 'kayley', single: 'B5', childUnits: [] },
+                    { id: 'chloe', single: 'B7', childUnits: [] }
+                  ]
+                }
+              ]
+            },
+            {
+              id: 'gooma2',
+              single: 'F4',
+              childUnits: [
+                { id: 'ahfat', single: 'M14', childUnits: [], dashed: true }
+              ]
+            },
+            {
+              id: 'gooma3',
+              single: 'X3',
+              childUnits: [
+                {
+                  id: 'keith-manyi',
+                  partners: ['F1', 'M6'],
+                  childUnits: [
+                    { id: 'natalie', single: 'M10', childUnits: [] }
+                  ]
+                },
+                { id: 'cherry', single: 'M5', childUnits: [] }
+              ]
+            }
+          ]
+        }
       ]
-    ];
+    };
   }
 
-  layoutUnit(unit, x, y) {
+  // Calculate width needed for each unit (including descendants)
+  calculateWidths(familyUnits) {
+    const calcWidth = (unit) => {
+      // Base width of this unit
+      let selfWidth = LAYOUT.personWidth;
+      if (unit.partners) {
+        const validPartners = unit.partners.filter(id => this.people.has(id));
+        if (validPartners.length === 2) {
+          selfWidth = LAYOUT.personWidth * 2 + LAYOUT.coupleGap;
+        }
+      }
+
+      // Calculate children width
+      if (unit.childUnits && unit.childUnits.length > 0) {
+        let childrenWidth = 0;
+        unit.childUnits.forEach((child, i) => {
+          calcWidth(child);
+          childrenWidth += child.totalWidth;
+          if (i > 0) childrenWidth += LAYOUT.siblingGap;
+        });
+        unit.childrenWidth = childrenWidth;
+        unit.totalWidth = Math.max(selfWidth, childrenWidth);
+      } else {
+        unit.childrenWidth = 0;
+        unit.totalWidth = selfWidth;
+      }
+      unit.selfWidth = selfWidth;
+    };
+
+    familyUnits.roots.forEach(root => calcWidth(root));
+  }
+
+  // Position units top-down, centering children under parents
+  positionUnits(familyUnits) {
+    let x = LAYOUT.padding;
+    const y = LAYOUT.padding;
+
+    familyUnits.roots.forEach((root, i) => {
+      if (i > 0) x += LAYOUT.familyGap;
+      this.positionUnit(root, x, y, 0);
+      x += root.totalWidth;
+    });
+  }
+
+  positionUnit(unit, x, y, depth) {
+    // Center this unit within its allocated width
+    const centerX = x + unit.totalWidth / 2;
+    const unitStartX = centerX - unit.selfWidth / 2;
+
+    // Position this unit's people
     if (unit.partners) {
-      // Couple
       const ids = unit.partners.filter(id => this.people.has(id));
       if (ids.length === 2) {
-        this.positions.set(ids[0], { x, y, unitId: unit.id });
-        x += LAYOUT.personWidth + LAYOUT.coupleGap;
-        this.positions.set(ids[1], { x, y, unitId: unit.id });
-        x += LAYOUT.personWidth;
+        this.positions.set(ids[0], { x: unitStartX, y, unitId: unit.id });
+        this.positions.set(ids[1], { x: unitStartX + LAYOUT.personWidth + LAYOUT.coupleGap, y, unitId: unit.id });
       } else if (ids.length === 1) {
-        this.positions.set(ids[0], { x, y, unitId: unit.id });
-        x += LAYOUT.personWidth;
+        this.positions.set(ids[0], { x: unitStartX, y, unitId: unit.id });
       }
-    } else if (unit.single) {
-      if (this.people.has(unit.single)) {
-        this.positions.set(unit.single, { x, y, unitId: unit.id });
-        x += LAYOUT.personWidth;
-      }
+    } else if (unit.single && this.people.has(unit.single)) {
+      this.positions.set(unit.single, { x: unitStartX, y, unitId: unit.id });
     }
 
-    return x;
+    // Position children
+    if (unit.childUnits && unit.childUnits.length > 0) {
+      const childY = y + LAYOUT.generationGap;
+      // Center children block under parent
+      let childX = centerX - unit.childrenWidth / 2;
+
+      unit.childUnits.forEach((child, i) => {
+        if (i > 0) childX += LAYOUT.siblingGap;
+        this.positionUnit(child, childX, childY, depth + 1);
+        childX += child.totalWidth;
+      });
+    }
   }
 
   buildConnections() {
