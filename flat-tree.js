@@ -344,8 +344,9 @@ function renderFlatTree(container, data, style = 'photos') {
 
     const name = document.createElement('div');
     name.classList.add('name');
-    // Use first name only in flat view
-    const displayName = person.name.split(' ')[0];
+    // Use first name only, but keep full name for Aunt/Uncle
+    const firstName = person.name.split(' ')[0];
+    const displayName = (firstName === 'Aunt' || firstName === 'Uncle') ? person.name : firstName;
     name.textContent = displayName;
 
     div.appendChild(photo);
