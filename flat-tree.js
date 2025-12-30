@@ -1,14 +1,15 @@
 // Data-driven family tree layout engine
 // Calculates positions and renders from family_tree.json
+// LEFT-TO-RIGHT orientation: oldest on left, youngest on right
 
 const LAYOUT = {
   personWidth: 58,
   personHeight: 78,
-  coupleGap: -6,     // Negative = partners overlap/touch
-  siblingGap: 8,     // Gap between siblings
-  familyGap: 35,     // Gap between family units
-  generationGap: 90, // Vertical gap between generations
-  padding: 15
+  coupleGap: -6,      // Negative = partners overlap/touch (horizontal)
+  siblingGap: 12,     // Vertical gap between siblings
+  familyGap: 25,      // Vertical gap between family units in same generation
+  generationGap: 100, // Horizontal gap between generations
+  padding: 20
 };
 
 class FamilyTreeLayout {
@@ -52,69 +53,13 @@ class FamilyTreeLayout {
     });
   }
 
-  // Calculate generation level for each person (0 = oldest)
-  calculateGenerations() {
-    this.generations = new Map();
-
-    // Find root people (no parents in data)
-    const roots = [];
-    this.people.forEach((person, id) => {
-      if (!this.childOf.has(id)) {
-        roots.push(id);
-      }
-    });
-
-    // BFS to assign generations
-    const queue = roots.map(id => ({ id, gen: 0 }));
-    const visited = new Set();
-
-    while (queue.length > 0) {
-      const { id, gen } = queue.shift();
-      if (visited.has(id)) continue;
-      visited.add(id);
-
-      this.generations.set(id, gen);
-
-      // Find children
-      const families = this.parentIn.get(id) || [];
-      families.forEach(fam => {
-        fam.children.forEach(childId => {
-          if (!visited.has(childId) && this.people.has(childId)) {
-            queue.push({ id: childId, gen: gen + 1 });
-          }
-        });
-      });
-    }
-
-    // Handle any unvisited (disconnected) people
-    this.people.forEach((person, id) => {
-      if (!this.generations.has(id)) {
-        this.generations.set(id, 0);
-      }
-    });
-  }
-
-  // Group people by generation
-  groupByGeneration() {
-    this.genGroups = new Map();
-    this.generations.forEach((gen, id) => {
-      if (!this.genGroups.has(gen)) {
-        this.genGroups.set(gen, []);
-      }
-      this.genGroups.get(gen).push(id);
-    });
-  }
-
-  // Main layout calculation - positions children centered under parents
+  // Main layout calculation
   calculateLayout() {
-    this.calculateGenerations();
-    this.groupByGeneration();
-
     // Build family tree with parent-child relationships
     const familyUnits = this.buildFamilyUnits();
 
-    // Calculate widths bottom-up, then position top-down
-    this.calculateWidths(familyUnits);
+    // Calculate heights (for vertical stacking), then position left-to-right
+    this.calculateHeights(familyUnits);
     this.positionUnits(familyUnits);
 
     this.buildConnections();
@@ -123,7 +68,7 @@ class FamilyTreeLayout {
   // Build family units with their children
   buildFamilyUnits() {
     return {
-      // Row 0: Great-grandparents (roots)
+      // Generation 0: Great-grandparents (roots) - leftmost column
       roots: [
         {
           id: 'ham-popo',
@@ -215,78 +160,81 @@ class FamilyTreeLayout {
     };
   }
 
-  // Calculate width needed for each unit (including descendants)
-  calculateWidths(familyUnits) {
-    const calcWidth = (unit) => {
-      // Base width of this unit
-      let selfWidth = LAYOUT.personWidth;
-      if (unit.partners) {
-        const validPartners = unit.partners.filter(id => this.people.has(id));
-        if (validPartners.length === 2) {
-          selfWidth = LAYOUT.personWidth * 2 + LAYOUT.coupleGap;
-        }
-      }
+  // Calculate height needed for each unit (including descendants) - for vertical stacking
+  calculateHeights(familyUnits) {
+    const calcHeight = (unit) => {
+      // Base height of this unit (couple or single person)
+      let selfHeight = LAYOUT.personHeight;
 
-      // Calculate children width
+      // Calculate children total height (stacked vertically)
       if (unit.childUnits && unit.childUnits.length > 0) {
-        let childrenWidth = 0;
+        let childrenHeight = 0;
         unit.childUnits.forEach((child, i) => {
-          calcWidth(child);
-          childrenWidth += child.totalWidth;
-          if (i > 0) childrenWidth += LAYOUT.siblingGap;
+          calcHeight(child);
+          childrenHeight += child.totalHeight;
+          if (i > 0) childrenHeight += LAYOUT.siblingGap;
         });
-        unit.childrenWidth = childrenWidth;
-        unit.totalWidth = Math.max(selfWidth, childrenWidth);
+        unit.childrenHeight = childrenHeight;
+        unit.totalHeight = Math.max(selfHeight, childrenHeight);
       } else {
-        unit.childrenWidth = 0;
-        unit.totalWidth = selfWidth;
+        unit.childrenHeight = 0;
+        unit.totalHeight = selfHeight;
       }
-      unit.selfWidth = selfWidth;
+      unit.selfHeight = selfHeight;
     };
 
-    familyUnits.roots.forEach(root => calcWidth(root));
+    familyUnits.roots.forEach(root => calcHeight(root));
   }
 
-  // Position units top-down, centering children under parents
+  // Position units: generations go left-to-right, units within generation stack top-to-bottom
   positionUnits(familyUnits) {
-    let x = LAYOUT.padding;
-    const y = LAYOUT.padding;
+    const x = LAYOUT.padding;
+    let y = LAYOUT.padding;
 
     familyUnits.roots.forEach((root, i) => {
-      if (i > 0) x += LAYOUT.familyGap;
+      if (i > 0) y += LAYOUT.familyGap;
       this.positionUnit(root, x, y, 0);
-      x += root.totalWidth;
+      y += root.totalHeight;
     });
   }
 
   positionUnit(unit, x, y, depth) {
-    // Center this unit within its allocated width
-    const centerX = x + unit.totalWidth / 2;
-    const unitStartX = centerX - unit.selfWidth / 2;
+    // Center this unit vertically within its allocated height
+    const centerY = y + unit.totalHeight / 2;
+    const unitY = centerY - unit.selfHeight / 2;
+
+    // Calculate width of this unit (couple vs single)
+    let unitWidth = LAYOUT.personWidth;
+    if (unit.partners) {
+      const ids = unit.partners.filter(id => this.people.has(id));
+      if (ids.length === 2) {
+        unitWidth = LAYOUT.personWidth * 2 + LAYOUT.coupleGap;
+      }
+    }
 
     // Position this unit's people
     if (unit.partners) {
       const ids = unit.partners.filter(id => this.people.has(id));
       if (ids.length === 2) {
-        this.positions.set(ids[0], { x: unitStartX, y, unitId: unit.id });
-        this.positions.set(ids[1], { x: unitStartX + LAYOUT.personWidth + LAYOUT.coupleGap, y, unitId: unit.id });
+        this.positions.set(ids[0], { x, y: unitY, unitId: unit.id });
+        this.positions.set(ids[1], { x: x + LAYOUT.personWidth + LAYOUT.coupleGap, y: unitY, unitId: unit.id });
       } else if (ids.length === 1) {
-        this.positions.set(ids[0], { x: unitStartX, y, unitId: unit.id });
+        this.positions.set(ids[0], { x, y: unitY, unitId: unit.id });
       }
     } else if (unit.single && this.people.has(unit.single)) {
-      this.positions.set(unit.single, { x: unitStartX, y, unitId: unit.id });
+      this.positions.set(unit.single, { x, y: unitY, unitId: unit.id });
     }
 
-    // Position children
+    // Position children (to the right)
     if (unit.childUnits && unit.childUnits.length > 0) {
-      const childY = y + LAYOUT.generationGap;
-      // Center children block under parent
-      let childX = centerX - unit.childrenWidth / 2;
+      const childX = x + unitWidth + LAYOUT.generationGap;
+      // Center children block vertically relative to parent
+      let childY = centerY - unit.childrenHeight / 2;
 
       unit.childUnits.forEach((child, i) => {
-        if (i > 0) childX += LAYOUT.siblingGap;
+        if (i > 0) childY += LAYOUT.siblingGap;
         this.positionUnit(child, childX, childY, depth + 1);
-        childX += child.totalWidth;
+        childY += child.totalHeight;
       });
     }
   }
@@ -337,24 +285,6 @@ class FamilyTreeLayout {
         to: this.positions.get('F7')
       });
     }
-  }
-
-  // Get center X of a person
-  getCenterX(id) {
-    const pos = this.positions.get(id);
-    return pos ? pos.x + LAYOUT.personWidth / 2 : 0;
-  }
-
-  // Get bottom Y of a person
-  getBottomY(id) {
-    const pos = this.positions.get(id);
-    return pos ? pos.y + LAYOUT.personHeight : 0;
-  }
-
-  // Get top Y of a person
-  getTopY(id) {
-    const pos = this.positions.get(id);
-    return pos ? pos.y : 0;
   }
 }
 
@@ -452,82 +382,90 @@ function drawConnections(svg, layout) {
   });
 }
 
+// Draw horizontal parent-child connections (left-to-right)
 function drawParentChildConnection(svg, conn, layout) {
   const parents = conn.parents;
   const children = conn.children;
   const isDashed = conn.style === 'dashed';
 
-  // Calculate parent center point
-  let parentCenterX;
+  // Calculate parent center point (right edge)
+  let parentRightX;
   if (parents.length === 2) {
-    parentCenterX = (parents[0].x + parents[1].x + LAYOUT.personWidth) / 2 + LAYOUT.coupleGap / 2;
+    parentRightX = Math.max(parents[0].x, parents[1].x) + LAYOUT.personWidth + LAYOUT.coupleGap;
   } else {
-    parentCenterX = parents[0].x + LAYOUT.personWidth / 2;
+    parentRightX = parents[0].x + LAYOUT.personWidth;
   }
-  const parentBottomY = parents[0].y + LAYOUT.personHeight;
 
-  // Drop line from parent
-  const dropY = parentBottomY + 12;
+  // Parent center Y
+  let parentCenterY;
+  if (parents.length === 2) {
+    parentCenterY = (parents[0].y + parents[1].y) / 2 + LAYOUT.personHeight / 2;
+  } else {
+    parentCenterY = parents[0].y + LAYOUT.personHeight / 2;
+  }
 
-  // Calculate bar Y (midpoint to children)
-  const childTopY = Math.min(...children.map(c => c.y));
-  const barY = dropY + (childTopY - dropY) / 2;
+  // Horizontal extension from parent
+  const extendX = parentRightX + 15;
 
-  // Draw vertical drop from parents
+  // Calculate bar X (midpoint to children)
+  const childLeftX = Math.min(...children.map(c => c.x));
+  const barX = extendX + (childLeftX - extendX) / 2;
+
+  // Draw horizontal line from parents
   drawPath(svg, [
-    { x: parentCenterX, y: parentBottomY },
-    { x: parentCenterX, y: dropY }
+    { x: parentRightX, y: parentCenterY },
+    { x: extendX, y: parentCenterY }
   ], isDashed ? 'dashed' : '');
 
   if (children.length === 1) {
     // Single child - elbow
-    const childX = children[0].x + LAYOUT.personWidth / 2;
+    const childY = children[0].y + LAYOUT.personHeight / 2;
     drawPath(svg, [
-      { x: parentCenterX, y: dropY },
-      { x: parentCenterX, y: barY },
-      { x: childX, y: barY },
-      { x: childX, y: children[0].y }
+      { x: extendX, y: parentCenterY },
+      { x: barX, y: parentCenterY },
+      { x: barX, y: childY },
+      { x: children[0].x, y: childY }
     ], isDashed ? 'dashed' : '');
   } else {
-    // Multiple children - horizontal bar
-    const childXs = children.map(c => c.x + LAYOUT.personWidth / 2);
-    const leftX = Math.min(...childXs);
-    const rightX = Math.max(...childXs);
+    // Multiple children - vertical bar
+    const childYs = children.map(c => c.y + LAYOUT.personHeight / 2);
+    const topY = Math.min(...childYs);
+    const bottomY = Math.max(...childYs);
 
-    // Vertical to bar
+    // Horizontal to bar
     drawPath(svg, [
-      { x: parentCenterX, y: dropY },
-      { x: parentCenterX, y: barY }
+      { x: extendX, y: parentCenterY },
+      { x: barX, y: parentCenterY }
     ], isDashed ? 'dashed' : '');
 
-    // Horizontal bar
+    // Vertical bar
     drawPath(svg, [
-      { x: leftX, y: barY },
-      { x: rightX, y: barY }
+      { x: barX, y: topY },
+      { x: barX, y: bottomY }
     ], isDashed ? 'dashed' : '');
 
-    // Vertical drops to each child
+    // Horizontal lines to each child
     children.forEach(child => {
-      const childX = child.x + LAYOUT.personWidth / 2;
+      const childY = child.y + LAYOUT.personHeight / 2;
       drawPath(svg, [
-        { x: childX, y: barY },
-        { x: childX, y: child.y }
+        { x: barX, y: childY },
+        { x: child.x, y: childY }
       ], isDashed ? 'dashed' : '');
     });
   }
 }
 
 function drawNephewConnection(svg, conn) {
-  const fromX = conn.from.x + LAYOUT.personWidth / 2;
-  const fromY = conn.from.y + LAYOUT.personHeight;
-  const toX = conn.to.x + LAYOUT.personWidth / 2;
-  const toY = conn.to.y;
-  const midY = fromY + (toY - fromY) / 2;
+  const fromX = conn.from.x + LAYOUT.personWidth;
+  const fromY = conn.from.y + LAYOUT.personHeight / 2;
+  const toX = conn.to.x;
+  const toY = conn.to.y + LAYOUT.personHeight / 2;
+  const midX = fromX + (toX - fromX) / 2;
 
   drawPath(svg, [
     { x: fromX, y: fromY },
-    { x: fromX, y: midY },
-    { x: toX, y: midY },
+    { x: midX, y: fromY },
+    { x: midX, y: toY },
     { x: toX, y: toY }
   ], 'nephew');
 }
