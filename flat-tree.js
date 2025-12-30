@@ -5,7 +5,7 @@
 const LAYOUT = {
   personWidth: 58,
   personHeight: 78,
-  coupleGap: -6,      // Negative = partners overlap/touch (horizontal)
+  coupleGap: -14,     // Negative = partners overlap (matches grid view)
   siblingGap: 6,      // Vertical gap between siblings
   familyGap: 12,      // Vertical gap between family units in same generation
   generationGap: 70,  // Horizontal gap between generations
