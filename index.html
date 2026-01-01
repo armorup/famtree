@@ -118,7 +118,10 @@
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
-    .nested-view .tree,
+    .nested-view .tree {
+      transform-origin: top left;
+      transition: transform 0.2s ease;
+    }
     .flat-view .tree-container {
       min-width: 900px;
     }
@@ -199,7 +202,7 @@
     .nested-view.active { display: block; }
 
     .nested-view .tree {
-      display: flex;
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
       gap: 5px;
@@ -210,7 +213,6 @@
       justify-content: center;
       align-items: flex-start;
       gap: 30px;
-      width: 100%;
     }
     .nested-view .family-unit {
       display: flex;
@@ -292,6 +294,12 @@
       stroke-width: 1;
       stroke-dasharray: 4 4;
       opacity: 0.4;
+    }
+    .nested-view .duplicate-connectors path.nephew-line {
+      stroke: #999;
+      stroke-width: 2;
+      stroke-dasharray: 5 5;
+      opacity: 0.6;
     }
 
     @media print {
@@ -708,6 +716,34 @@
     const layoutLabels = { nested: icons.squares, flat: icons.list };
     const styleLabels = { photos: icons.user, doodles: icons.smile };
 
+    // ========== SCALE NESTED TREE TO FIT ==========
+    function scaleNestedTreeToFit() {
+      const tree = document.querySelector('.nested-view .tree');
+      if (!tree) return;
+
+      // Reset scale to measure natural width
+      tree.style.transform = 'scale(1) translateX(0)';
+
+      // Wait for layout
+      requestAnimationFrame(() => {
+        const treeWidth = tree.scrollWidth;
+        const containerWidth = document.querySelector('.tree-wrapper').clientWidth;
+        const padding = 20; // Some breathing room
+
+        if (treeWidth > containerWidth - padding) {
+          const scale = (containerWidth - padding) / treeWidth;
+          const finalScale = Math.max(0.5, scale);
+          const scaledWidth = treeWidth * finalScale;
+          const offsetX = (containerWidth - scaledWidth) / 2;
+          tree.style.transform = `translateX(${offsetX}px) scale(${finalScale})`;
+        } else {
+          // Center if smaller than container
+          const offsetX = (containerWidth - treeWidth) / 2;
+          tree.style.transform = `translateX(${Math.max(0, offsetX)}px) scale(1)`;
+        }
+      });
+    }
+
     // ========== RENDER FLAT TREE ==========
     function renderFlatView() {
       if (!familyData) return;
@@ -715,7 +751,7 @@
       renderFlatTree(container, familyData, currentStyle);
     }
 
-    // ========== DUPLICATE CONNECTORS ==========
+    // ========== DUPLICATE & NEPHEW CONNECTORS ==========
     function drawDuplicateConnectors() {
       const tree = document.querySelector('.nested-view .tree');
       if (!tree) return;
@@ -737,7 +773,6 @@
 
       // Filter to only names with duplicates
       const duplicates = Object.entries(byName).filter(([_, arr]) => arr.length > 1);
-      if (duplicates.length === 0) return;
 
       // Create SVG overlay
       const treeRect = tree.getBoundingClientRect();
@@ -767,6 +802,32 @@
         }
       });
 
+      // Draw nephew connections (Ham -> Yan, Peter, Siu-Kee)
+      const nephewConnections = [
+        ['Ham Li', 'Yan'],
+        ['Ham Li', 'Peter'],
+        ['Ham Li', 'Siu-Kee']
+      ];
+
+      nephewConnections.forEach(([fromName, toName]) => {
+        const fromEl = byName[fromName]?.[0];
+        const toEl = byName[toName]?.[0];
+        if (!fromEl || !toEl) return;
+
+        const rect1 = fromEl.getBoundingClientRect();
+        const rect2 = toEl.getBoundingClientRect();
+
+        const x1 = rect1.left - treeRect.left + rect1.width / 2;
+        const y1 = rect1.top - treeRect.top + rect1.height;
+        const x2 = rect2.left - treeRect.left + rect2.width / 2;
+        const y2 = rect2.top - treeRect.top;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M${x1},${y1} Q${x1},${(y1+y2)/2} ${(x1+x2)/2},${(y1+y2)/2} Q${x2},${(y1+y2)/2} ${x2},${y2}`);
+        path.classList.add('nephew-line');
+        svg.appendChild(path);
+      });
+
       tree.appendChild(svg);
     }
 
@@ -780,8 +841,11 @@
       if (layout === 'flat') {
         renderFlatView();
       } else {
-        // Redraw connectors after layout settles
-        setTimeout(drawDuplicateConnectors, 50);
+        // Scale and redraw connectors after layout settles
+        setTimeout(() => {
+          scaleNestedTreeToFit();
+          drawDuplicateConnectors();
+        }, 50);
       }
     }
 
@@ -848,7 +912,10 @@
 
     window.addEventListener('resize', () => {
       if (currentLayout === 'flat') renderFlatView();
-      else drawDuplicateConnectors();
+      else {
+        scaleNestedTreeToFit();
+        drawDuplicateConnectors();
+      }
     });
   </script>
 </body>
