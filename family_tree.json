@@ -40,7 +40,8 @@
     {"id": "X5", "name": "mama", "gender": "F", "inPhoto": false},
     {"id": "X6", "name": "Siu-Kee", "gender": "M", "inPhoto": false},
     {"id": "X7", "name": "Eldest Son", "gender": "M", "inPhoto": false},
-    {"id": "X8", "name": "Popo's parents", "gender": "M", "inPhoto": false}
+    {"id": "X8", "name": "Popo's parents", "gender": "M", "inPhoto": false},
+    {"id": "X9", "name": "Ham's sister", "gender": "F", "inPhoto": false}
   ],
   "families": [
     {"partners": ["F5", "F6"], "children": ["B1", "B10", "B11"], "note": "Ernest & Amy -> Stanley, Stewart, Mary"},
@@ -59,8 +60,9 @@
     {"partners": ["M14", "M13"], "children": [], "note": "AhFat & Yee-sou"},
     {"partners": ["F4"], "children": ["X7", "M14"], "note": "Gooma2 -> eldest son, AhFat (2nd son)"},
     {"partners": ["X7", "M12"], "children": [], "note": "Eldest Son & Dai-sou"},
-    {"partners": ["X6"], "children": ["M2"], "note": "Siu-Kee -> Rex"}
+    {"partners": ["X6"], "children": ["M2"], "note": "Siu-Kee -> Rex"},
+    {"partners": ["X9"], "children": ["M7", "X6"], "note": "Ham's sister -> Peter (older), Siu-Kee (younger)"}
   ],
   "hidden": [],
-  "notes": "X-prefix = connectors not in photo. X7 = Gooma2's eldest son (name unknown). X8 = Popo's parents (shows Popo & Uncle Ma as siblings). Eldest son has solid line, AhFat has dashed (uncertain)."
+  "notes": "X-prefix = connectors not in photo. X7 = Gooma2's eldest son (name unknown). X8 = Popo's parents (shows Popo & Uncle Ma as siblings). X9 = Ham's sister (Peter/Siu-Kee's mother, shows nephew relationship)."
 }

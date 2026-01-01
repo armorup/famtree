@@ -79,7 +79,7 @@ class FamilyTreeLayout {
               single: 'F4',
               childUnits: [
                 { id: 'eldestson-daisou', partners: ['X7', 'M12'], childUnits: [] },
-                { id: 'ahfat-yeesou', partners: ['M14', 'M13'], childUnits: [], dashed: true }
+                { id: 'ahfat-yeesou', partners: ['M14', 'M13'], childUnits: [] }
               ]
             },
             {
@@ -126,22 +126,24 @@ class FamilyTreeLayout {
           id: 'ham-popo',
           partners: ['X2', 'X1'],
           childUnits: [
-            { id: 'yan-fun', partners: ['F7', 'M11'], childUnits: [], isNephew: true }
-          ]
-        },
-        {
-          id: 'peter-cora',
-          partners: ['M7', 'M8'],
-          childUnits: [
-            { id: 'hong', single: 'M1', childUnits: [] },
-            { id: 'michelle', single: 'M9', childUnits: [] }
-          ]
-        },
-        {
-          id: 'siukee',
-          partners: ['X6'],
-          childUnits: [
-            { id: 'rex', single: 'M2', childUnits: [] }
+            { id: 'yan-fun', partners: ['F7', 'M11'], childUnits: [], isNephew: true },
+            {
+              id: 'peter-cora',
+              partners: ['M7', 'M8'],
+              childUnits: [
+                { id: 'hong', single: 'M1', childUnits: [] },
+                { id: 'michelle', single: 'M9', childUnits: [] }
+              ],
+              isNephew: true
+            },
+            {
+              id: 'siukee',
+              partners: ['X6'],
+              childUnits: [
+                { id: 'rex', single: 'M2', childUnits: [] }
+              ],
+              isNephew: true
+            }
           ]
         },
         {
@@ -258,8 +260,7 @@ class FamilyTreeLayout {
       { parents: ['B10', 'B9'], children: ['B5', 'B7'], type: 'normal' },
       { parents: ['X3'], children: ['M6', 'M5'], type: 'normal' },
       { parents: ['F1', 'M6'], children: ['M10'], type: 'normal' },
-      { parents: ['F4'], children: ['X7'], type: 'normal' },
-      { parents: ['F4'], children: ['M14'], type: 'dashed' }
+      { parents: ['F4'], children: ['X7', 'M14'], type: 'normal' }
     ];
 
     familyConnections.forEach(conn => {
@@ -281,12 +282,28 @@ class FamilyTreeLayout {
       }
     });
 
-    // Nephew connection (Popo -> Yan)
-    if (this.positions.has('X1') && this.positions.has('F7')) {
+    // Nephew connection (Ham -> Yan)
+    if (this.positions.has('X2') && this.positions.has('F7')) {
       this.connections.push({
         type: 'nephew',
-        from: this.positions.get('X1'),
+        from: this.positions.get('X2'),
         to: this.positions.get('F7')
+      });
+    }
+
+    // Nephew connections (Ham -> Peter, Ham -> Siu-Kee)
+    if (this.positions.has('X2') && this.positions.has('M7')) {
+      this.connections.push({
+        type: 'nephew',
+        from: this.positions.get('X2'),
+        to: this.positions.get('M7')
+      });
+    }
+    if (this.positions.has('X2') && this.positions.has('X6')) {
+      this.connections.push({
+        type: 'nephew',
+        from: this.positions.get('X2'),
+        to: this.positions.get('X6')
       });
     }
   }
